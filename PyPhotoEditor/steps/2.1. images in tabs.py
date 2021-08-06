@@ -29,7 +29,7 @@ class PyPhotoEditor:
         menu_bar = Menu(self.root)
 
         file_menu = Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="Open", command=self.open_new_images)
+        file_menu.add_command(label="Open", command=self.open_new_image)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
         self.root.configure(menu=menu_bar)
@@ -37,24 +37,20 @@ class PyPhotoEditor:
     def draw_widgets(self):
         self.image_tabs.pack(fill="both", expand=1)
 
-    def open_new_images(self):
-        image_paths = fd.askopenfilenames(filetypes=(("Images", "*.jpeg;*.jpg;*.png"), ))
-        for image_path in image_paths:
-            self.add_new_image(image_path)
-
-    def add_new_image(self, image_path):
-        image = Image.open(image_path)
-        image_tk = ImageTk.PhotoImage(image)
+    def open_new_image(self):
+        image_path = fd.askopenfilename(filetypes=(("Images", "*.jpeg;*.jpg;*.png"), ))
+        image = ImageTk.PhotoImage(Image.open(image_path))
         self.opened_images.append([image_path, image])
 
         image_tab = Frame(self.image_tabs)
 
-        image_label = Label(image_tab, image=image_tk)
-        image_label.image = image_tk
+        image_label = Label(image_tab, image=image)
+        image_label.image = image
         image_label.pack(side="bottom", fill="both", expand="yes")
 
         self.image_tabs.add(image_tab, text=image_path.split('/')[-1])
         self.image_tabs.select(image_tab)
+
 
     def _close(self, event):
         self.root.quit()
